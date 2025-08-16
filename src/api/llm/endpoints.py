@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 # Crear el router para las rutas de LLM
-router = APIRouter(prefix="/api/llm", tags=["LLM"])
+router = APIRouter(prefix="/llm", tags=["LLM"])
 
 # Modelos de datos
 class LLMRequest(BaseModel):
@@ -19,7 +19,7 @@ class LLMResponse(BaseModel):
     status: str
 
 # Endpoint principal para generar texto
-@router.post("/generate", response_model=LLMResponse)
+@router.post("/", response_model=LLMResponse)
 async def generate_text(request: LLMRequest):
     """
     Genera texto usando un modelo de lenguaje
@@ -36,24 +36,10 @@ async def generate_text(request: LLMRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Endpoint para obtener información del modelo
-@router.get("/models")
-async def get_models():
+@router.get("/", response_model=LLMResponse)
+async def get_text(request: LLMRequest):
     """
-    Retorna la lista de modelos disponibles
+    Obtiene texto usando un modelo de lenguaje
     """
-    return {
-        "models": [
-            {"id": "default", "name": "Modelo por defecto", "type": "text-generation"},
-            {"id": "gpt-3.5", "name": "GPT-3.5", "type": "text-generation"},
-            {"id": "gpt-4", "name": "GPT-4", "type": "text-generation"}
-        ]
-    }
+    return LLMResponse(response="Texto obtenido", model="default", tokens_used=0, status="success")
 
-# Endpoint de salud
-@router.get("/health")
-async def health_check():
-    """
-    Verifica el estado de la API
-    """
-    return {"status": "healthy", "service": "LLM API"}

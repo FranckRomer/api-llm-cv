@@ -1,6 +1,6 @@
 from typing import Union
 from fastapi import FastAPI
-from src.api.llm.routes import router as llm_router
+from src.api.routes import api_router
 
 app = FastAPI(
     title="API LLM CV",
@@ -8,8 +8,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Incluir las rutas de LLM
-app.include_router(llm_router)
+# Incluir todas las rutas de la API de manera centralizada
+app.include_router(api_router)
 
 @app.get("/")
 def read_root():
